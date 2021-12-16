@@ -5,6 +5,8 @@ import 'package:flutter_api_demo_news_app/models/article_model.dart';
 import 'package:flutter_api_demo_news_app/models/category_model.dart';
 
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_api_demo_news_app/views/article_view.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -84,15 +86,17 @@ class _HomeState extends State<Home> {
               ),
               ///Blogs
               Container(
+                padding: EdgeInsets.only(top: 16),
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: articles.length,
+                    physics: ClampingScrollPhysics(),
                     itemBuilder: (context,index){
                       return BlogTile(
                         imageUrl: articles[index].uriToImage.toString(),
                         title: articles[index].title.toString(),
                         desc: articles[index].description.toString(),
-
+                        url: articles[index].url,
                       );
                     }
                 ),
@@ -119,7 +123,7 @@ class CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        
+
       },
       child: Container(
         margin: EdgeInsets.only(right: 10),
@@ -128,7 +132,7 @@ class CategoryTile extends StatelessWidget {
           children: <Widget>[
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: Image.network(imageUrl,width: 120,height: 60,fit: BoxFit.cover,),
+              child: CachedNetworkImage(width: 120,height: 60,fit: BoxFit.cover, imageUrl: imageUrl),
             ),
             Container(
               alignment: Alignment.center,
@@ -155,10 +159,13 @@ class CategoryTile extends StatelessWidget {
 class BlogTile extends StatelessWidget {
 
   final String imageUrl,title,desc;
+  final url;
+
   BlogTile({
     required this.imageUrl,
     required this.title,
-    required this.desc
+    required this.desc,
+    required this.url,
   });
 
 
@@ -166,24 +173,34 @@ class BlogTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child:  Image.network(imageUrl),
-          ),
-          Container(
-            padding: EdgeInsets.all(8),
-            child: Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18)),
-          ),
-          Container(
-              margin: EdgeInsets.only(bottom: 20),
-              padding: EdgeInsets.all(10),
-              decoration : BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.black12),
-              child:  Text(desc),
-          ),
-        ],
+    return GestureDetector(
+      onTap: (){
+        var route = MaterialPageRoute(builder: (context)=>
+            ArticleView(
+          blogUrl: url,)
+        );
+        Navigator.push(context, route);
+        //print(url);
+      },
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child:  Image.network(imageUrl),
+            ),
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.blue)),
+            ),
+            Container(
+                margin: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.all(10),
+                decoration : BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.black12),
+                child:  Text(desc),
+            ),
+          ],
+        ),
       ),
     );
   }
