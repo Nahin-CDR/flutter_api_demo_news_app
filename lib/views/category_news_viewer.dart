@@ -1,26 +1,43 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_api_demo_news_app/single_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 
+import 'string_extension.dart';
+
+
+
 
 Map? mapResponse;
-Map? dataResponse;
 List? listResponse;
-String? element;
 
-class API extends StatefulWidget {
+
+
+
+class CategoryNewsViewer extends StatefulWidget {
+  final String category;
+  CategoryNewsViewer({required this.category});
+
+
+
   @override
-  _APIState createState() => _APIState();
+  _CategoryNewsViewerState createState() => _CategoryNewsViewerState(category);
 }
 
 
-class _APIState extends State<API> {
- //https://newsapi.org/v2/everything?q=apple&from=2021-12-13&to=2021-12-13&sortBy=popularity&apiKey=240ada24aa594437bc4f596da435b1f7
- //https://newsapi.org/v2/top-headlines?country=in&category=Health&apiKey=240ada24aa594437bc4f596da435b1f7
-  final url = "https://newsapi.org/v2/top-headlines?country=in&category=Health&apiKey=240ada24aa594437bc4f596da435b1f7";
+
+class _CategoryNewsViewerState extends State<CategoryNewsViewer> {
+  //https://newsapi.org/v2/everything?q=apple&from=2021-12-13&to=2021-12-13&sortBy=popularity&apiKey=240ada24aa594437bc4f596da435b1f7
+  //https://newsapi.org/v2/top-headlines?country=in&category=Health&apiKey=240ada24aa594437bc4f596da435b1f7
+
+  String category;
+  _CategoryNewsViewerState(this.category);
+
+
+  get K => category[0].toUpperCase();
+
+
 
 
 
@@ -28,25 +45,32 @@ class _APIState extends State<API> {
 
 
   Future ApiCall() async {
-    http.Response response;
-    response = await http.get(Uri.parse(url));
-    if(response.statusCode == 200){
-      setState(() {
-        mapResponse = json.decode(response.body);
-        //dataResponse = mapResponse!['articles'];
-        listResponse = mapResponse!['articles'];
-      });
 
-    }else
-    {
-      print("error");
+    final url = "https://newsapi.org/v2/top-headlines?country=in&category=$category&apiKey=240ada24aa594437bc4f596da435b1f7";
+    final response = await http.get(Uri.parse(url));
+    final jsonData = jsonDecode(response.body);
+    print(response.statusCode);
+    if(jsonData['status'] == "ok"){
+
+
+      jsonData['articles'].forEach((element){
+        if(element['urlToImage'] != null && element['description'] != null){
+          setState(() {
+            mapResponse = jsonDecode(response.body);
+            listResponse = mapResponse!['articles'];
+          });
+        }
+      });
     }
+
+
   }
 
   @override
   void initState() {
     // TODO: implement initState
     ApiCall();
+
     super.initState();
   }
 
@@ -54,17 +78,52 @@ class _APIState extends State<API> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+
+      ///App bar Section
+
       appBar: AppBar(
-        title: Text("News App"),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color : Colors.black,
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Live",style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+            Text("News",style: TextStyle(color: Colors.blue)),
+            Text("   ${K+category.substring(1)+category.substring(category.length)}",style: TextStyle(color: Colors.black)),
+          ],
+        ),
+        actions: <Widget>[
+          Opacity(
+            opacity: 0,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Icon(Icons.arrow_back,color: Colors.transparent),
+
+            ),
+          )
+        ],
+        centerTitle: true,
+        elevation: 0.0,
       ),
+
+
+
+      ///Body Section
+
+
+
+
       body: ListView.builder(itemBuilder: (context,index){
         return Container(
           child: Column(
             children: [
               Container(
                 margin: new EdgeInsets.all(10),
-                //decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.green),
-                child: listResponse![index]['urlToImage'] == null ? Text(""):
+               // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.green),
+                child: listResponse![index]['urlToImage'] == null ? Text("Loading Image"):
                 Image.network(listResponse![index]['urlToImage']),
               ),
 
@@ -92,22 +151,6 @@ class _APIState extends State<API> {
                   ),
                 ),
               ),
-
-
-              // Container(
-              //   margin: new EdgeInsets.only(left: 10,right: 10),
-              //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(1)),
-              //   child: Center(
-              //     child: listResponse![index]['content'] == null ?Text("Loading data"):
-              //     Text("Content : "+listResponse![index]['content'].toString(),style: TextStyle(
-              //         fontSize: 18
-              //     ),
-              //     ),
-              //   ),
-              // ),
-              //
-
-
 
               Container(
                 height: 30,

@@ -3,10 +3,10 @@ import 'package:flutter_api_demo_news_app/helper/data.dart';
 import 'package:flutter_api_demo_news_app/helper/news.dart';
 import 'package:flutter_api_demo_news_app/models/article_model.dart';
 import 'package:flutter_api_demo_news_app/models/category_model.dart';
-
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_api_demo_news_app/views/article_view.dart';
+import 'package:flutter_api_demo_news_app/views/category_news.dart';
+import 'package:flutter_api_demo_news_app/views/category_news_viewer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -48,8 +48,8 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Flutter",style: TextStyle(color: Colors.black),),
+          children: const [
+            Text("Live",style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
             Text("News",style: TextStyle(color: Colors.blue),)
           ],
         ),
@@ -66,10 +66,7 @@ class _HomeState extends State<Home> {
 
               ///Categories
 
-
-
               Container(
-
                 height: 70,
                 margin: EdgeInsets.all(10),
                 child: ListView.builder(
@@ -84,6 +81,10 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
+
+
+
+
               ///Blogs
               Container(
                 padding: EdgeInsets.only(top: 16),
@@ -112,6 +113,7 @@ class _HomeState extends State<Home> {
 }
 
 
+//Category Tiles
 class CategoryTile extends StatelessWidget {
 
   final imageUrl,categoryName;
@@ -122,9 +124,17 @@ class CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
 
-      },
+      onTap: (){
+        var route = MaterialPageRoute(builder: (context)=>
+            CategoryNewsViewer(
+              category: categoryName.toString())
+        );
+        Navigator.push(context, route);
+           print(categoryName);
+        },
+
+
       child: Container(
         margin: EdgeInsets.only(right: 10),
         child: Stack(
@@ -156,6 +166,14 @@ class CategoryTile extends StatelessWidget {
   }
 }
 
+
+
+
+
+
+
+
+//Blog Tiles
 class BlogTile extends StatelessWidget {
 
   final String imageUrl,title,desc;
@@ -191,13 +209,13 @@ class BlogTile extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.all(8),
-              child: Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.blue)),
+              child: Text(title,style: TextStyle(fontSize: 20,color: Colors.black)),
             ),
             Container(
                 margin: EdgeInsets.only(bottom: 20),
                 padding: EdgeInsets.all(10),
-                decoration : BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.black12),
-                child:  Text(desc),
+                decoration : BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white10),
+                child:  Text(desc,style: TextStyle(fontSize: 16,color: Colors.grey),),
             ),
           ],
         ),

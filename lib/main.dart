@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api_demo_news_app/single_page.dart';
+import 'package:flutter_api_demo_news_app/views/category_news_viewer.dart';
 import 'package:flutter_api_demo_news_app/views/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
