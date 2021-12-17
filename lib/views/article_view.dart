@@ -33,7 +33,7 @@ class _ArticleViewState extends State<ArticleView> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Flutter",style: TextStyle(color: Colors.black),),
+            Text("Live",style: TextStyle(color: Colors.red),),
             Text("News",style: TextStyle(color: Colors.blue),)
           ],
         ),

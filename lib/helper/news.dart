@@ -10,7 +10,7 @@ class News{
 
 //country=in sources=techcrunch
   Future <void> getNews() async {
-    final url = "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=240ada24aa594437bc4f596da435b1f7";
+    final url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=554eed673394471185391ce10ddcc379";
     final response = await http.get(Uri.parse(url));
     final jsonData = jsonDecode(response.body);
     if(jsonData['status'] == "ok"){

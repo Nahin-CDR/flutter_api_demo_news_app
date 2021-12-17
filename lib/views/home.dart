@@ -131,7 +131,6 @@ class CategoryTile extends StatelessWidget {
               category: categoryName.toString())
         );
         Navigator.push(context, route);
-           print(categoryName);
         },
 
 

@@ -4,14 +4,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 
+import 'article_view.dart';
 import 'string_extension.dart';
-
-
 
 
 Map? mapResponse;
 List? listResponse;
-
 
 
 
@@ -41,15 +39,11 @@ class _CategoryNewsViewerState extends State<CategoryNewsViewer> {
 
 
 
-
-
-
   Future ApiCall() async {
 
-    final url = "https://newsapi.org/v2/top-headlines?country=in&category=$category&apiKey=240ada24aa594437bc4f596da435b1f7";
+    final url = "https://newsapi.org/v2/top-headlines?country=us&category=$category&apiKey=554eed673394471185391ce10ddcc379";
     final response = await http.get(Uri.parse(url));
     final jsonData = jsonDecode(response.body);
-    print(response.statusCode);
     if(jsonData['status'] == "ok"){
 
 
@@ -110,72 +104,164 @@ class _CategoryNewsViewerState extends State<CategoryNewsViewer> {
       ),
 
 
+      // body:  SingleChildScrollView(
+      //   padding: EdgeInsets.symmetric(horizontal: 16),
+      //   child: Container(
+      //     child: Column(
+      //       children: <Widget>[
+      //
+      //         ///Blogs
+      //         Container(
+      //           padding: EdgeInsets.only(top: 16),
+      //           child: ListView.builder(
+      //               shrinkWrap: true,
+      //               itemCount: listResponse?.length,
+      //               physics: ClampingScrollPhysics(),
+      //               itemBuilder: (context,index){
+      //                 return Column(
+      //                   children: [
+      //                     ClipRRect(
+      //                       borderRadius: BorderRadius.circular(10),
+      //                       child:  Image.network(listResponse![index]['urlToImage']),
+      //                     ),
+      //                     Container(
+      //                       margin: new EdgeInsets.only(top: 10),
+      //                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
+      //                       child: Center(
+      //                         child: listResponse![index]['title'] == null ?Text("Loading data"):
+      //                         Text(listResponse![index]['title'].toString(),style: TextStyle(
+      //                             fontSize: 18,
+      //                             fontWeight: FontWeight.bold
+      //                         ),
+      //                         ),
+      //                       ),
+      //                     ),
+      //
+      //                     Container(
+      //                       margin: new EdgeInsets.only(top: 10,left: 10,right: 10),
+      //                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
+      //                       child: Center(
+      //                         child: listResponse![index]['description'] == null ?Text("Loading data"):
+      //                         Text(listResponse![index]['description'].toString(),style: TextStyle(
+      //                             fontSize: 18
+      //                         ),
+      //                         ),
+      //                       ),
+      //                     ),
+      //
+      //
+      //
+      //                     Container(
+      //                       height: 30,
+      //                       margin: new EdgeInsets.only(left: 10,right: 10,top: 10),
+      //                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
+      //                       child: Center(
+      //                         child: listResponse![index]['publishedAt'] == null ?Text("Loading data"):
+      //                         Text("published At : "+listResponse![index]['publishedAt'].toString(),style: TextStyle(
+      //                             fontSize: 18,
+      //                             color: Colors.grey
+      //                         ),
+      //                         ),
+      //                       ),
+      //                     ),
+      //
+      //
+      //
+      //                     Container(
+      //                       margin: new EdgeInsets.only(top: 20,bottom: 20),
+      //                       height: 1,
+      //                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: Colors.redAccent),
+      //                     )
+      //
+      //                   ],
+      //                 );
+      //                 // return  BlogTile(
+      //                 //     imageUrl: listResponse![index]['urlToImage'].toString(),
+      //                 //     title:listResponse![index]['title'].toString(),
+      //                 //     desc:listResponse![index]['description'].toString() ,
+      //                 //     url:listResponse![index]['url']
+      //                 // );
+      //               }
+      //           ),
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      // ),
 
-      ///Body Section
+      body: Container(
+        margin: EdgeInsets.all(12),
+        padding: EdgeInsets.only(top: 16),
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemBuilder: (context,index){
+          return BlogTile(
+              imageUrl: listResponse![index]['urlToImage'].toString(),
+              title: listResponse![index]['title'].toString(),
+              desc: listResponse![index]['description'].toString(),
+              url: listResponse![index]['url']
+          );
+           
+        },
+          itemCount: listResponse == null?0:listResponse!.length,
+        ),
+
+      )
+    );
+  }
+}
+
+
+
+//For showing every single blog separately
+
+class BlogTile extends StatelessWidget {
+
+  final String imageUrl,title,desc;
+  final url;
+
+  BlogTile({
+    required this.imageUrl,
+    required this.title,
+    required this.desc,
+    required this.url,
+  });
 
 
 
 
-      body: ListView.builder(itemBuilder: (context,index){
-        return Container(
-          child: Column(
-            children: [
-              Container(
-                margin: new EdgeInsets.all(10),
-               // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.green),
-                child: listResponse![index]['urlToImage'] == null ? Text("Loading Image"):
-                Image.network(listResponse![index]['urlToImage']),
-              ),
-
-              Container(
-                margin: new EdgeInsets.only(top: 10),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
-                child: Center(
-                  child: listResponse![index]['title'] == null ?Text("Loading data"):
-                  Text(listResponse![index]['title'].toString(),style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  ),
-                  ),
-                ),
-              ),
-
-              Container(
-                margin: new EdgeInsets.only(top: 10,left: 10,right: 10),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
-                child: Center(
-                  child: listResponse![index]['description'] == null ?Text("Loading data"):
-                  Text(listResponse![index]['description'].toString(),style: TextStyle(
-                      fontSize: 18
-                  ),
-                  ),
-                ),
-              ),
-
-              Container(
-                height: 30,
-                margin: new EdgeInsets.only(left: 10,right: 10,top: 10),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
-                child: Center(
-                  child: listResponse![index]['publishedAt'] == null ?Text("Loading data"):
-                  Text("published At : "+listResponse![index]['publishedAt'].toString(),style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey
-                  ),
-                  ),
-                ),
-              ),
-
-              Container(
-                margin: new EdgeInsets.only(top: 20,bottom: 20),
-                height: 1,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: Colors.redAccent),
-              )
-            ],
-          ),
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        var route = MaterialPageRoute(builder: (context)=>
+            ArticleView(
+              blogUrl: url,
+            )
         );
+        Navigator.push(context, route);
+        print(url);
       },
-        itemCount: listResponse == null?0:listResponse!.length,
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child:  Image.network(imageUrl),
+            ),
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Text(title,style: TextStyle(fontSize: 20,color: Colors.black)),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 20),
+              padding: EdgeInsets.all(10),
+              decoration : BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white10),
+              child:  Text(desc,style: TextStyle(fontSize: 16,color: Colors.grey),),
+            ),
+          ],
+        ),
       ),
     );
   }
